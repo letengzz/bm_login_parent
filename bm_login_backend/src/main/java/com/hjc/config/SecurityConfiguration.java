@@ -1,6 +1,9 @@
 package com.hjc.config;
 
 import com.hjc.entity.RestBean;
+import com.hjc.entity.vo.response.AuthorizeVo;
+import com.hjc.utils.JwtUtils;
+import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -44,13 +48,25 @@ public class SecurityConfiguration {
                 .build();
     }
 
+    @Resource
+    private JwtUtils jwtUtils;
     //登陆成功处理器
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         //设置响应格式
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write(RestBean.success().asJsonString());
+        //用户身份信息
+        User user = (User) authentication.getPrincipal();
+        //创建token
+        String token = jwtUtils.createJwt(user, 1, "小明");
+        //封装成Vo
+        AuthorizeVo authorizeVo = new AuthorizeVo();
+        authorizeVo.setUsername("小明");
+        authorizeVo.setRole("");
+        authorizeVo.setToken(token);
+        authorizeVo.setExpire(jwtUtils.expireTime());
+        response.getWriter().write(RestBean.success(authorizeVo).asJsonString());
     }
 
     //登陆失败处理器
