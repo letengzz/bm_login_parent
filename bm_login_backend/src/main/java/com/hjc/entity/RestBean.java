@@ -5,22 +5,32 @@ import com.alibaba.fastjson2.JSONWriter;
 
 public record RestBean<T>(int code, T data, String message) {
     //请求成功
-    public static <T> RestBean<T> success(T data){
-        return new RestBean<>(200,data,"请求成功");
+    public static <T> RestBean<T> success(T data) {
+        return new RestBean<>(200, data, "请求成功");
     }
 
     //请求成功 无data
-    public static <T> RestBean<T> success(){
+    public static <T> RestBean<T> success() {
         return RestBean.success(null);
     }
 
     //请求失败
-    public  static <T> RestBean<T> failure(int code,String message){
-        return new RestBean<>(code,null,message);
+    public static <T> RestBean<T> failure(int code, String message) {
+        return new RestBean<>(code, null, message);
+    }
+
+    //401错误处理
+    public static <T> RestBean<T> unauthorized(String message) {
+        return failure(401, message);
+    }
+
+    //403错误处理
+    public static <T> RestBean<T> forbidden(String message) {
+        return failure(401, message);
     }
 
     //转化为JSON字符串
-    public String asJsonString(){
+    public String asJsonString() {
         //JSONWriter.Feature.WriteNulls 防止null值错误
         return JSON.toJSONString(this, JSONWriter.Feature.WriteNulls);
     }
