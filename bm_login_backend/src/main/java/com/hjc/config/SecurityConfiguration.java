@@ -48,12 +48,16 @@ public class SecurityConfiguration {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        response.getWriter().write("Success");
+        //设置响应格式
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().write(RestBean.success().asJsonString());
     }
 
     //登陆失败处理器
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        response.getWriter().write("Failure");
+        //设置响应格式
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().write(RestBean.failure(401,exception.getMessage()).asJsonString());
     }
 
     //退出登陆处理器
