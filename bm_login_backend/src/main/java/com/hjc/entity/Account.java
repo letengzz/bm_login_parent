@@ -13,7 +13,7 @@ import java.util.Date;
 @TableName("db_account")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class Account implements BaseData{
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String username;

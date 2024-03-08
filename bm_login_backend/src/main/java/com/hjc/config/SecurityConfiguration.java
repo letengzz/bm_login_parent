@@ -10,6 +10,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -69,6 +70,7 @@ public class SecurityConfiguration {
 
     @Resource
     private AccountService accountService;
+
     //登陆成功处理器
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -81,11 +83,19 @@ public class SecurityConfiguration {
         //创建token
         String token = jwtUtils.createJwt(user, account.getId(), account.getUsername());
         //封装成Vo
-        AuthorizeVo authorizeVo = new AuthorizeVo();
-        authorizeVo.setUsername(account.getUsername());
-        authorizeVo.setRole(account.getRole());
-        authorizeVo.setToken(token);
-        authorizeVo.setExpire(jwtUtils.expireTime());
+        AuthorizeVo authorizeVo = account
+                .asViewObject(AuthorizeVo.class, v -> {
+                    v.setToken(token);
+                    v.setExpire(jwtUtils.expireTime());
+                });
+//        AuthorizeVo authorizeVo = new AuthorizeVo();
+        //属性拷贝 相同属性名的属性
+//        BeanUtils.copyProperties(account,authorizeVo);
+
+//        authorizeVo.setUsername(account.getUsername());
+//        authorizeVo.setRole(account.getRole());
+//        authorizeVo.setToken(token);
+//        authorizeVo.setExpire(jwtUtils.expireTime());
         response.getWriter().write(RestBean.success(authorizeVo).asJsonString());
     }
 
@@ -104,10 +114,10 @@ public class SecurityConfiguration {
         PrintWriter writer = response.getWriter();
         // 请求头中获取token
         String authorization = request.getHeader("Authorization");
-        if (jwtUtils.invalidateJwt(authorization)){
+        if (jwtUtils.invalidateJwt(authorization)) {
             writer.write(RestBean.success().asJsonString());
-        }else {
-            writer.write(RestBean.failure(400,"退出登录失败").asJsonString());
+        } else {
+            writer.write(RestBean.failure(400, "退出登录失败").asJsonString());
         }
     }
 
