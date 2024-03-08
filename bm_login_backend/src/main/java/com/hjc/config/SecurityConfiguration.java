@@ -1,8 +1,10 @@
 package com.hjc.config;
 
+import com.hjc.entity.Account;
 import com.hjc.entity.RestBean;
 import com.hjc.entity.vo.response.AuthorizeVo;
 import com.hjc.filter.JwtAuthorizeFilter;
+import com.hjc.service.AccountService;
 import com.hjc.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
@@ -65,6 +67,8 @@ public class SecurityConfiguration {
     @Resource
     private JwtUtils jwtUtils;
 
+    @Resource
+    private AccountService accountService;
     //登陆成功处理器
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -73,12 +77,13 @@ public class SecurityConfiguration {
         response.setContentType("application/json;charset=utf-8");
         //用户身份信息
         User user = (User) authentication.getPrincipal();
+        Account account = accountService.findAccountByNameOrEmail(user.getUsername());
         //创建token
-        String token = jwtUtils.createJwt(user, 1, "小明");
+        String token = jwtUtils.createJwt(user, account.getId(), account.getUsername());
         //封装成Vo
         AuthorizeVo authorizeVo = new AuthorizeVo();
-        authorizeVo.setUsername("小明");
-        authorizeVo.setRole("");
+        authorizeVo.setUsername(account.getUsername());
+        authorizeVo.setRole(account.getRole());
         authorizeVo.setToken(token);
         authorizeVo.setExpire(jwtUtils.expireTime());
         response.getWriter().write(RestBean.success(authorizeVo).asJsonString());
