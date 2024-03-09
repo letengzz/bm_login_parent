@@ -40,8 +40,6 @@ public interface BaseData {
             field.setAccessible(true);
             //将当前对象取出来的属性 赋值给vo对象的属性
             field.set(vo,source.get(this));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
     }
 }
