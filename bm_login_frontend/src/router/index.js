@@ -1,5 +1,6 @@
 //引入createRouter
 import {createRouter, createWebHistory} from "vue-router";
+import {unauthorized} from "@/net/index.js";
 
 // 创建路由
 const router = createRouter({
@@ -20,9 +21,25 @@ const router = createRouter({
                     component: ()=> import('@/views/welcome/LoginPage.vue')
                 }
             ]
+        },
+        {
+            path: '/index',
+            name: 'index',
+            component: () =>import('@/views/IndexView.vue')
         }
     ]
 })
 
+//配置路由守卫
+router.beforeEach((to,from,next) =>{
+    const isUnauthorized = unauthorized()
+    if (to.name.startsWith('welcome-') && !isUnauthorized){
+        next('/index')
+    }else if (to.fullPath.startsWith('/index') && isUnauthorized){
+        next('/')
+    }else {
+        next()
+    }
+})
 //对外暴露
 export default router

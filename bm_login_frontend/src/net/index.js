@@ -86,5 +86,34 @@ function deleteAccessToken(){
     sessionStorage.removeItem(authItemName)
 }
 
+//退出登录
+function logout(success,failure){
+    get('/api/auth/logout',() =>{
+        deleteAccessToken()
+        ElMessage.success('退出登录成功，欢迎您再次使用')
+        success()
+    },failure)
+}
+//获取请求头
+function accessHeader(){
+    const token = takeAccessToken();
+    return token ? {
+        'Authorization': `Bearer ${takeAccessToken()}`
+    } : {}
+}
+
+//携带请求头的get方法
+function get(url,success,failure = defaultFailure){
+    internalGet(url,accessHeader(),success,failure)
+}
+//携带请求头的post方法
+function post(url,data,success,failure = defaultFailure){
+    internalPost(url,data,accessHeader(),success,failure)
+}
+
+//是否登录
+function unauthorized(){
+    return !takeAccessToken()
+}
 //暴露
-export {login}
+export {login,logout,get,post,unauthorized}
