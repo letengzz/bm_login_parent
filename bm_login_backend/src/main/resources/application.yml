@@ -15,3 +15,11 @@ spring:
       origin: '*'
       credentials: false
       methods: '*'
+  mail:
+    host: smtp.163.com
+    username: m19164221189@163.com
+    password: RAKTCQGORXBPIVPR
+  rabbitmq:
+    virtual-host: /
+    username: admin
+    password: admin
