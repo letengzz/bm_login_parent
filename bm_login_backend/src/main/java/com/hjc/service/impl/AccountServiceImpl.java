@@ -1,7 +1,9 @@
 package com.hjc.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hjc.entity.Account;
+import com.hjc.entity.vo.request.EmailRegisterVO;
 import com.hjc.mapper.AccountMapper;
 import com.hjc.myConst.Const;
 import com.hjc.service.AccountService;
@@ -13,8 +15,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -69,6 +73,52 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         }
     }
 
+    //加密
+    @Resource
+    private PasswordEncoder encoder;
+
+    @Override
+    public String registerEmailAccount(EmailRegisterVO vo) {
+        String email = vo.getEmail();
+        String username = vo.getUsername();
+        String code = stringRedisTemplate.opsForValue().get(Const.VERIFY_EMAIL_DATA + email);
+
+        //判断验证码
+        if (code == null){
+            return "验证码过期，请重新获取";
+        }
+        if (!code.equals(vo.getCode())){
+            return "验证码错误";
+        }
+        //判断邮箱是否被注册
+        if (this.existsAccountByEmail(email)){
+            return "邮箱已被注册";
+        }
+        //判断用户名是否被注册
+        if (this.existsAccountByEmail(email)){
+            return "用户名已被注册";
+        }
+
+        String password =  encoder.encode(vo.getPassword());
+        Account account = new Account(null,vo.getUsername(),password, vo.getEmail(), "user",new Date());
+        if (this.save(account)){
+            //删除code
+            stringRedisTemplate.delete(Const.VERIFY_EMAIL_DATA + email);
+            return null;
+        }else {
+            return "内部错误，请联系管理员";
+        }
+    }
+
+    //通过邮件判断账户是否存在
+    private boolean existsAccountByEmail(String email) {
+        return this.baseMapper.exists(Wrappers.<Account>query().eq("email", email));
+    }
+
+    //通过用户名判断账户是否存在
+    private boolean existsAccountByUsername(String username) {
+        return this.baseMapper.exists(Wrappers.<Account>query().eq("username", username));
+    }
     @Resource
     private FlowUtils flowUtils;
 
