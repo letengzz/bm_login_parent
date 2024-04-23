@@ -31,8 +31,8 @@ function userLogin(){
 </script>
 
 <template>
-  <!--  字体居中 左右隔开20px -->
   <div style="text-align: center;margin: 0 20px">
+    <!--  字体居中 左右隔开20px -->
     <div style="margin-top: 150px">
       <div style="font-size: 25px;font-weight: bold">登录</div>
       <div style="font-size: 14px;color: gray">在进入系统之前，请先输入用户名和密码进行登录</div>
@@ -75,7 +75,7 @@ function userLogin(){
         <span style="font-size: 13px;color: gray">没有账号</span>
       </el-divider>
       <div>
-        <el-button style="width: 270px" type="warning" plain>立即注册</el-button>
+        <el-button  @click="router.push('/register')" style="width: 270px" type="warning" plain>立即注册</el-button>
       </div>
     </div>
   </div>

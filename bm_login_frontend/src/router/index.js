@@ -13,12 +13,19 @@ const router = createRouter({
             name: 'welcome',
             //组件名
             component: () => import('@/views/WelcomeView.vue'),
+
+            meta: { keepAlive: true }, // true：需要被缓存
             // 子路由
             children: [
                 {
                     path: '',
                     name: 'welcome-login',
                     component: ()=> import('@/views/welcome/LoginPage.vue')
+                },
+                {
+                    path: 'register',
+                    name: 'welcome-register',
+                    component: ()=> import('@/views/welcome/RegisterPage.vue')
                 }
             ]
         },
