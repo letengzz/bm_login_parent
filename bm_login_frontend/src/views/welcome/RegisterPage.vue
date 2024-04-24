@@ -144,7 +144,7 @@ function register(){
               </el-input>
             </el-col>
             <el-col :span="5">
-              <el-button @click="askCode" :disabled="!isEmailValid || coldTime" type="success">
+              <el-button @click="askCode" :disabled="!isEmailValid || coldTime > 0" type="success">
                 {{coldTime ? `请稍等 ${coldTime}s` : '发送验证码'}}
               </el-button>
             </el-col>
@@ -152,7 +152,7 @@ function register(){
         </el-form-item>
       </el-form>
       <div style="margin-top: 80px">
-        <el-button style="width: 270px" type="warning" @click="register" plain>注册</el-button>
+        <el-button style="width: 270px" type="warning" @click="register" plain>立即注册</el-button>
       </div>
       <div style="margin-top: 20px">
         <span style="font-size: 14px;line-height: 15px;color: gray">已有账号？</span>
