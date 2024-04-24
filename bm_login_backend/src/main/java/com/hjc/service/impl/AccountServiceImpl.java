@@ -3,7 +3,9 @@ package com.hjc.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hjc.entity.Account;
+import com.hjc.entity.vo.request.ConfirmResetVO;
 import com.hjc.entity.vo.request.EmailRegisterVO;
+import com.hjc.entity.vo.request.EmailRestVO;
 import com.hjc.mapper.AccountMapper;
 import com.hjc.myConst.Const;
 import com.hjc.service.AccountService;
@@ -108,6 +110,30 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         }else {
             return "内部错误，请联系管理员";
         }
+    }
+
+    @Override
+    public String resetConfirm(ConfirmResetVO vo) {
+        String email = vo.getEmail();
+        String code = stringRedisTemplate.opsForValue().get(Const.VERIFY_EMAIL_DATA + email);
+        if(code == null) return "请先获取验证码";
+        if (!code.equals(vo.getCode())) return "验证码错误，请重新输入";
+
+        return null;
+    }
+
+    //重置密码
+    @Override
+    public String resetEmailAccountPassword(EmailRestVO vo) {
+        String email = vo.getEmail();
+        String verify = this.resetConfirm(new ConfirmResetVO(email, vo.getCode()));
+        if (verify != null) return verify;
+        String password = encoder.encode(vo.getPassword());
+        boolean update = this.update().eq("email", email).set("password", password).update();
+        if (update){
+            stringRedisTemplate.delete(Const.VERIFY_EMAIL_DATA + email);
+        }
+        return null;
     }
 
     //通过邮件判断账户是否存在
