@@ -1471,17 +1471,17 @@ public class FlowLimitFilter extends HttpFilter {
 
 删除默认界面：
 
-![image-20240308175448310](./assets/image-20240308175448310.png)
+![image-20240308175448310](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031708471.png)
 
-![image-20240308175613771](./assets/image-20240308175613771.png)
+![image-20240308175613771](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031708051.png)
 
-![image-20240308175703305](./assets/image-20240308175703305.png)
+![image-20240308175703305](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031708987.png)
 
-![image-20240308180031170](./assets/image-20240308180031170.png)
+![image-20240308180031170](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031708982.png)
 
 创建views目录来存放页面：
 
-![image-20240308180141447](./assets/image-20240308180141447.png)
+![image-20240308180141447](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031708215.png)
 
 导入element-ui：
 
@@ -1570,11 +1570,11 @@ export default defineConfig({
 
 创建views/welcome目录用于存放跳转的路由界面：
 
-![image-20240308181747303](./assets/image-20240308181747303.png)
+![image-20240308181747303](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031709670.png)
 
 创建登录：
 
-![image-20240308201645933](./assets/image-20240308201645933.png)
+![image-20240308201645933](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031709069.png)
 
 在前端路径下安装路由vue-router：
 
@@ -1584,7 +1584,7 @@ npm install vue-router
 
 创建router目录来存放路由：
 
-![image-20240308180509102](./assets/image-20240308180509102.png)
+![image-20240308180509102](https://cdn.jsdelivr.net/gh/letengzz/tc2@main/img202405031709123.png)
 
 创建路由信息：
 
